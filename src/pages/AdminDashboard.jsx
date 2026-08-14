@@ -234,7 +234,7 @@ function WorkingMechanismEditor({ form, setForm }) {
     <div className="dash-card">
       <h3>آلية عمل النظام (الخطوات)</h3>
       {steps.map((s, i) => (
-        <div key={i} style={{ border: '1px solid rgba(201,162,39,0.2)', borderRadius: 12, padding: 14, marginBottom: 14 }}>
+        <div key={i} style={{ border: '1px solid rgba(185,167,121,0.2)', borderRadius: 12, padding: 14, marginBottom: 14 }}>
           <div className="grid grid-3">
             <div className="field"><label>الرقم</label><input value={s.step} onChange={(e) => update(i, 'step', e.target.value)} /></div>
             <div className="field" style={{ gridColumn: 'span 2' }}><label>العنوان</label><input value={s.title} onChange={(e) => update(i, 'title', e.target.value)} /></div>
@@ -291,7 +291,7 @@ function TestingEditor({ form, setForm }) {
     <div className="dash-card">
       <h3>الاختبارات والنتائج</h3>
       {tests.map((t, ti) => (
-        <div key={ti} style={{ border: '1px solid rgba(201,162,39,0.2)', borderRadius: 12, padding: 14, marginBottom: 14 }}>
+        <div key={ti} style={{ border: '1px solid rgba(185,167,121,0.2)', borderRadius: 12, padding: 14, marginBottom: 14 }}>
           <div className="grid grid-2" style={{ alignItems: 'end' }}>
             <div className="field"><label>عنوان الاختبار</label><input value={t.title} onChange={(e) => updateTest(ti, 'title', e.target.value)} /></div>
             <button className="btn btn-sm btn-danger" onClick={() => removeTest(ti)}>حذف الاختبار</button>
@@ -377,44 +377,69 @@ function CollectionEditor({ table, fields, title, numeric = [], storage = false,
       <button className="btn btn-sm btn-ghost" onClick={create} disabled={busy}>+ إضافة {title === 'ملفات المشروع' ? 'ملف' : 'عنصر'}</button>
       <div style={{ marginTop: 16 }}>
         {items.map((row) => (
-          <div className="dash-card" key={row.id}>
-            <div className="grid grid-2">
-              {fields.map((f, fi) => {
-                const val = row[f] ?? ''
-                return (
-                  <div className="field" key={f} style={fi === 0 ? { gridColumn: '1/-1' } : undefined}>
-                    <label>{f}</label>
-                    {storage && f === 'file_url' ? (
-                      <div>
-                        <input value={val} onChange={(e) => update(row.id, { [f]: e.target.value })} placeholder="ضع رابطًا أو ارفع ملفًا" />
-                        <button className="btn btn-sm btn-ghost" onClick={() => uploadToField(row.id, 'file_url')} disabled={busy}>رفع ملف</button>
-                        {val && (
-                          <div style={{ fontSize: '0.82rem', color: 'var(--muted)' }}>{val}</div>
-                        )}
-                      </div>
-                    ) : (
-                      <input
-                        value={val}
-                        type={numeric.includes(f) ? 'number' : 'text'}
-                        onChange={(e) => update(row.id, { [f]: numeric.includes(f) ? Number(e.target.value) : e.target.value })}
-                      />
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-            {storage && row.image_url && <img src={row.image_url} alt="" className="preview-img" />}
-            <div className="dash-actions">
-              {storage && row.file_url && (
-                <a className="btn btn-sm btn-ghost" href={row.file_url} target="_blank" rel="noreferrer">عرض</a>
-              )}
-              <button className="btn btn-sm btn-danger" onClick={() => remove(row.id)}>حذف</button>
-            </div>
-          </div>
+          <RowCard
+            key={row.id}
+            row={row}
+            fields={fields}
+            numeric={numeric}
+            storage={storage}
+            busy={busy}
+            onUpdate={update}
+            onRemove={remove}
+            onUpload={uploadToField}
+          />
         ))}
         {items.length === 0 && <p style={{ color: 'var(--muted)' }}>لا توجد عناصر بعد.</p>}
       </div>
     </>
+  )
+}
+
+function RowCard({ row, fields, numeric, storage, busy, onUpdate, onRemove, onUpload }) {
+  const [draft, setDraft] = useState(row)
+  const set = (k, v) => setDraft((d) => ({ ...d, [k]: v }))
+  const commit = (k) => {
+    const nv = draft[k]
+    const ov = row[k]
+    if (String(nv ?? '') !== String(ov ?? '')) onUpdate(row.id, { [k]: nv })
+  }
+
+  return (
+    <div className="dash-card">
+      <div className="grid grid-2">
+        {fields.map((f, fi) => {
+          const val = draft[f] ?? ''
+          return (
+            <div className="field" key={f} style={fi === 0 ? { gridColumn: '1/-1' } : undefined}>
+              <label>{f}</label>
+              {storage && f === 'file_url' ? (
+                <div>
+                  <input value={val} onChange={(e) => set(f, e.target.value)} onBlur={() => commit(f)} placeholder="ضع رابطًا أو ارفع ملفًا" />
+                  <button className="btn btn-sm btn-ghost" onClick={() => onUpload(row.id, 'file_url')} disabled={busy}>رفع ملف</button>
+                  {val && (
+                    <div style={{ fontSize: '0.82rem', color: 'var(--muted)' }}>{val}</div>
+                  )}
+                </div>
+              ) : (
+                <input
+                  value={val}
+                  type={numeric.includes(f) ? 'number' : 'text'}
+                  onChange={(e) => set(f, numeric.includes(f) ? Number(e.target.value) : e.target.value)}
+                  onBlur={() => commit(f)}
+                />
+              )}
+            </div>
+          )
+        })}
+      </div>
+      {storage && draft.image_url && <img src={draft.image_url} alt="" className="preview-img" />}
+      <div className="dash-actions">
+        {storage && draft.file_url && (
+          <a className="btn btn-sm btn-ghost" href={draft.file_url} target="_blank" rel="noreferrer">عرض</a>
+        )}
+        <button className="btn btn-sm btn-danger" onClick={() => onRemove(row.id)}>حذف</button>
+      </div>
+    </div>
   )
 }
 
@@ -456,6 +481,8 @@ function MediaEditor({ onSaved }) {
   const updateTitle = async (id, title) => {
     await supabase.from('media').update({ title }).eq('id', id)
     await load()
+    onSaved?.()
+    toast('تم تعديل العنوان')
   }
   const remove = async (id) => {
     await supabase.from('media').delete().eq('id', id)
@@ -472,24 +499,36 @@ function MediaEditor({ onSaved }) {
         <button className="btn btn-sm btn-ghost" onClick={() => add('video')} disabled={busy}>+ رفع فيديو</button>
       </div>
       {items.map((m) => (
-        <div className="dash-card" key={m.id}>
-          <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
-            {m.type === 'video' ? (
-              <video src={m.url} style={{ width: 150, borderRadius: 10 }} controls />
-            ) : (
-              <img src={m.thumbnail_url || m.url} alt={m.title} style={{ width: 150, height: 110, objectFit: 'cover', borderRadius: 10 }} />
-            )}
-            <div style={{ flex: 1 }}>
-              <input value={m.title} onChange={(e) => updateTitle(m.id, e.target.value)} placeholder="عنوان الوسيط" />
-              <div className="dash-actions">
-                <a className="btn btn-sm btn-ghost" href={m.url} target="_blank" rel="noreferrer">فتح</a>
-                <button className="btn btn-sm btn-danger" onClick={() => remove(m.id)}>حذف</button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <MediaRow key={m.id} item={m} onTitle={updateTitle} onRemove={remove} />
       ))}
     </>
+  )
+}
+
+function MediaRow({ item, onTitle, onRemove }) {
+  const [draft, setDraft] = useState(item.title)
+  const commit = () => {
+    const t = draft.trim()
+    if (t && t !== item.title) onTitle(item.id, t)
+    else setDraft(item.title)
+  }
+  return (
+    <div className="dash-card">
+      <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
+        {item.type === 'video' ? (
+          <video src={item.url} style={{ width: 150, borderRadius: 10 }} controls />
+        ) : (
+          <img src={item.thumbnail_url || item.url} alt={item.title} style={{ width: 150, height: 110, objectFit: 'cover', borderRadius: 10 }} />
+        )}
+        <div style={{ flex: 1 }}>
+          <input value={draft} onChange={(e) => setDraft(e.target.value)} onBlur={commit} placeholder="عنوان الوسيط" />
+          <div className="dash-actions">
+            <a className="btn btn-sm btn-ghost" href={item.url} target="_blank" rel="noreferrer">فتح</a>
+            <button className="btn btn-sm btn-danger" onClick={() => onRemove(item.id)}>حذف</button>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 

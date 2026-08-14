@@ -3,7 +3,7 @@ import { useVisitor } from '../context/VisitorContext'
 import { Icon } from './Icon'
 import Particles from './Particles'
 
-export default function Welcome({ onExplore }) {
+export default function Welcome({ onExplore, leaving = false }) {
   const { enter } = useVisitor()
   const [step, setStep] = useState(0)
   const [input, setInput] = useState('')
@@ -27,7 +27,7 @@ export default function Welcome({ onExplore }) {
   }
 
   return (
-    <div className="welcome-wrap">
+    <div className={`welcome-wrap${leaving ? ' leaving' : ''}`}>
       <Particles />
       {step === 0 ? (
         <form className="welcome-card" onSubmit={submit}>

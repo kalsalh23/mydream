@@ -7,6 +7,7 @@ import Welcome from './components/Welcome'
 import Home from './pages/Home'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
+import { Icon } from './components/Icon'
 import { validateAdmin } from './lib/supabase'
 
 function LoadingScreen() {
@@ -17,8 +18,36 @@ function LoadingScreen() {
   )
 }
 
+function OpeningOverlay({ exiting, onExit }) {
+  useEffect(() => {
+    if (!exiting) return
+    const t = setTimeout(onExit, 900)
+    return () => clearTimeout(t)
+  }, [exiting, onExit])
+
+  return (
+    <div className={`open-overlay${exiting ? ' exiting' : ''}`}>
+      <div className="open-box">
+        <div className="open-rings">
+          <span className="open-ring" />
+          <span className="open-ring r2" />
+          <span className="open-ring r3" />
+          <span className="open-core">
+            <Icon name="unlock" size={44} />
+          </span>
+        </div>
+        <h2 className="open-title">
+          الباب مفتوح أمامك يا <span>بطل المستقبل</span>
+        </h2>
+        <p className="open-sub">دعنا نأخذك في جولة داخل مشروعنا خطوة بخطوة</p>
+      </div>
+    </div>
+  )
+}
+
 function Gate() {
   const [showHome, setShowHome] = useState(false)
+  const [phase, setPhase] = useState('idle')
   const loc = useLocation()
 
   const isAdminRoute = loc.pathname.startsWith('/admin')
@@ -27,13 +56,33 @@ function Gate() {
     document.title = 'قفل إلكتروني بواسطة بصمة الإصبع والصوت | مشروع تخرج'
   }, [])
 
+  const handleExplore = () => {
+    if (phase !== 'idle') return
+    setPhase('leaving')
+    setTimeout(() => setPhase('opening'), 480)
+    setTimeout(() => setShowHome(true), 1550)
+    setTimeout(() => setPhase('reveal'), 1620)
+  }
+
   if (isAdminRoute) return null
 
   if (!showHome) {
-    return <Welcome onExplore={() => setShowHome(true)} />
+    return (
+      <>
+        <Welcome onExplore={handleExplore} leaving={phase === 'leaving'} />
+        {phase === 'opening' && <OpeningOverlay />}
+      </>
+    )
   }
 
-  return <Home />
+  return (
+    <>
+      {phase === 'reveal' && <OpeningOverlay exiting onExit={() => setPhase('done')} />}
+      <div className="home-enter">
+        <Home />
+      </div>
+    </>
+  )
 }
 
 function Protected({ children }) {
