@@ -31,3 +31,9 @@ dist-ssr
 
 # Supabase secrets
 supabase/.temp
+
+# Vercel
+.vercel
+.vercel/*
+
+.vercel
