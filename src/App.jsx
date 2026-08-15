@@ -27,20 +27,13 @@ function OpeningOverlay({ exiting, onExit }) {
 
   return (
     <div className={`open-overlay${exiting ? ' exiting' : ''}`}>
-      <div className="open-box">
-        <div className="open-rings">
-          <span className="open-ring" />
-          <span className="open-ring r2" />
-          <span className="open-ring r3" />
-          <span className="open-core">
-            <Icon name="unlock" size={44} />
-          </span>
-        </div>
-        <h2 className="open-title">
-          الباب مفتوح أمامك يا <span>بطل المستقبل</span>
-        </h2>
-        <p className="open-sub">دعنا نأخذك في جولة داخل مشروعنا خطوة بخطوة</p>
+      <div className="open-core">
+        <Icon name="unlock" size={46} />
       </div>
+      <h2 className="open-title">
+        أهلاً بك في <span>مشروع تخرجنا</span>
+      </h2>
+      <p className="open-sub">بصمة الإصبع والصوت — قفل إلكتروني ذكي</p>
     </div>
   )
 }

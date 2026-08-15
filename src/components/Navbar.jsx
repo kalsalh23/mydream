@@ -3,14 +3,10 @@ import { useVisitor } from '../context/VisitorContext'
 import { Icon } from './Icon'
 
 const SECTIONS = [
-  { id: 'idea', label: 'الفكرة' },
-  { id: 'team', label: 'الفريق' },
-  { id: 'components', label: 'المكونات' },
-  { id: 'how', label: 'آلية العمل' },
-  { id: 'features', label: 'المميزات' },
-  { id: 'stages', label: 'المراحل' },
-  { id: 'gallery', label: 'المعرض' },
-  { id: 'files', label: 'الملفات' },
+  { id: 'idea', label: 'فكرة المشروع' },
+  { id: 'team', label: 'مقدمو المشروع' },
+  { id: 'supervisors', label: 'المشرفون' },
+  { id: 'conclusion', label: 'الخاتمة' },
 ]
 
 export default function Navbar() {

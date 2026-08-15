@@ -53,17 +53,23 @@ export default function Welcome({ onExplore, leaving = false }) {
           </button>
         </form>
       ) : (
-        <div className="welcome-card">
+        <div className="welcome-card welcome-note enter">
           <div className="welcome-gold-rays" />
-          <div className="welcome-logo">
-            <Icon name="unlock" size={50} />
-          </div>
           <h1 className="welcome-greeting">
-            أهلًا وسهلًا بك، <span className="welcome-name">{name}</span> 🌟
+            أهلاً وسهلاً بك يا <span className="welcome-name">{name}</span> 🤍
           </h1>
-          <p className="welcome-sub">سعدنا بزيارتك ومشاركتك لنا فرحة التخرج</p>
+          <p className="welcome-msg">
+            بكل فخر وامتنان، نرحّب بكم في مشروع تخرجنا، ونشكركم من القلب على حضوركم ومشاركتنا
+            هذه اللحظة المميزة. حضوركم كان أجمل دعمٍ لنا، ووجودكم اليوم يضيف إلى فرحتنا معنىً خاصاً. 🤍
+          </p>
+          <div className="welcome-team">نحن: قصي، محمود، ومحمد</div>
+          <p className="welcome-msg">
+            يسعدنا أن نشارككم ثمرة جهدنا وتعبنا، ونفخر بوجودكم معنا في هذه اللحظة التي نختتم بها
+            رحلةً ونبدأ بها طريقاً جديداً.
+          </p>
+          <p className="welcome-msg welcome-final">أهلاً وسهلاً بكم، وشكراً لأنكم كنتم جزءاً من فرحتنا. 🤍</p>
           <button className="btn btn-block" onClick={onExplore}>
-            اكتشف مشروعنا 🎓
+            ادخل إلى المشروع
           </button>
         </div>
       )}
