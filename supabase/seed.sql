@@ -21,7 +21,7 @@ update public.project_settings set
   specialization = 'تقنيات حاسوب',
   project_type = 'مشروع تخرج',
   graduation_year = '2026',
-  developed_by = 'قُدِّم بواسطة: علي القسّام',
+  developed_by = 'قُدِّم بواسطة: قصي',
   updated_at = now()
 where id = '00000000-0000-0000-0000-000000000001';
 

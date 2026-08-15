@@ -66,7 +66,7 @@ export const DEFAULT_SETTINGS = {
   specialization: 'تقنيات حاسوب',
   project_type: 'مشروع تخرج',
   graduation_year: '2026',
-  developed_by: 'قُدِّم بواسطة: علي القسّام',
+  developed_by: 'قُدِّم بواسطة: قصي',
 }
 
 export const DEFAULT_TEAM = [
