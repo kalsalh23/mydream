@@ -154,7 +154,7 @@ h1, h2, h3, h4 { font-family: var(--font-title); font-weight: 700; color: var(--
 }
 .welcome-input::placeholder { color: var(--muted); }
 .welcome-input:focus { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(185, 167, 121, 0.15); }
-.welcome-gold-rays { position: absolute; inset: 0; background: var(--grad-gold); opacity: 0.08; border-radius: 24px; }
+.welcome-gold-rays { position: absolute; inset: 0; background: var(--grad-gold); opacity: 0.08; border-radius: 24px; pointer-events: none; }
 
 /* ============ Navbar ============ */
 .navbar {
